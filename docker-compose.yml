@@ -1,0 +1,25 @@
+services:
+  todo-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - todo-data:/app/data
+    environment:
+      - APP_NAME=Todo API
+      - APP_PORT=3000
+      - LOG_LEVEL=info
+      - ENVIRONMENT=development
+      - DATABASE_PATH=/app/data/todo.db
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+
+volumes:
+  todo-data:
